@@ -24,3 +24,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// taài khoản login:
+// tk: lo@gmail.com hoặc l@gmail.com
+// mk: 123456
