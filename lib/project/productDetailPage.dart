@@ -15,6 +15,10 @@ class ProductDetailPage extends StatefulWidget {
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
   bool? isFavorite;
+  final TransformationController _transformationController = TransformationController();
+  TapDownDetails? _doubleTapDetails;
+  int _currentZoomLevelIndex = 0;
+  final List<double> _zoomLevels = [1.0, 2.0, 3.0, 4.0];
 
   @override
   void initState() {
@@ -237,15 +241,38 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: double.infinity,
-                  height: 250,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(imageUrl),
-                      fit: BoxFit.cover,
+                GestureDetector(
+                  onDoubleTapDown: (details) {
+                    _doubleTapDetails = details;
+                  },
+                  onDoubleTap: () {
+                    setState(() {
+                      _currentZoomLevelIndex = (_currentZoomLevelIndex + 1) % _zoomLevels.length;
+                    });
+
+                    if (_doubleTapDetails != null) {
+                      final position = _doubleTapDetails!.localPosition;
+                      _transformationController.value = Matrix4.identity()
+                        ..translate(-position.dx * (_zoomLevels[_currentZoomLevelIndex] - 1),
+                            -position.dy * (_zoomLevels[_currentZoomLevelIndex] - 1))
+                        ..scale(_zoomLevels[_currentZoomLevelIndex]);
+                    }
+                  },
+                  child: InteractiveViewer(
+                    transformationController: _transformationController,
+                    panEnabled: true,
+                    scaleEnabled: true,
+                    child: Container(
+                      width: double.infinity,
+                      height: 250,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(imageUrl),
+                          fit: BoxFit.cover,
+                        ),
+                        borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
+                      ),
                     ),
-                    borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
                   ),
                 ),
                 Padding(

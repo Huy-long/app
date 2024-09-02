@@ -12,7 +12,6 @@ class _LoginState extends State<Login> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   String _errorMessage = '';
-
   void _signIn() async {
     setState(() {
       _errorMessage = ''; // Clear previous error message
